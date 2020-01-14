@@ -50,3 +50,11 @@ au FileType c nnoremap <leader>i oif<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
 au FileType c nnoremap <leader>w owhile<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
 au VimEnter * echom "(>^.^<)"	
 au BufNewFile * :Stdheader
+au BufNewFile *.h :call WriteHeader()
+function WriteHeader()
+	normal! dd
+	call append(line('.'), toupper(getreg('%')))
+	normal! j
+	s/\./_/
+	:exe "normal! yypk^i#ifndef\<space>\<esc>j^i#\<space>define\<space>\<esc>o\<esc>o#endif"
+endfunction
