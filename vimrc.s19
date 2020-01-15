@@ -49,12 +49,14 @@ au FileType c nnoremap <buffer><leader>u ?\/\*<cr><c-v>/\*\/<cr>ld`<dd`>dd
 au FileType c nnoremap <leader>i oif<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
 au FileType c nnoremap <leader>w owhile<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
 au VimEnter * echom "(>^.^<)"	
+"put header at top of file
 au BufNewFile * :Stdheader
+"standard .h protection
 au BufNewFile *.h :call WriteHeader()
 function WriteHeader()
 	normal! dd
-	call append(line('.'), toupper(getreg('%')))
+	.put =toupper(expand('%:t'))
 	normal! j
 	s/\./_/
-	:exe "normal! yypk^i#ifndef\<space>\<esc>j^i#\<space>define\<space>\<esc>o\<esc>o#endif"
+	:exe "normal! yypk^i#ifndef\<space>\<esc>j^i#\<space>define\<space>\<esc>o\<esc>o#endif\<esc>ko\<esc>ko#include\<space><unistd.h>\<esc>o#include\<space><string.h>\<esc>o#include\<space><stdio.h>\<esc>o#include\<space><stdlib.h>\<esc>o\<esc>o"
 endfunction
