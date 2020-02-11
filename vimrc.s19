@@ -1,16 +1,15 @@
 set nu rnu
+set ru
 set splitbelow
 set splitright
+set undofile
+set undodir=~/.vim/undo_dir
 syntax on
 let mapleader = " "
 "move lines up and down
 noremap - ddkkp
 noremap + ddp
 "prevent arrows from being used
-noremap <Up> <nop>
-noremap <Down> <nop>
-noremap <Left> <nop>
-noremap <Right> <nop>
 inoremap <Up> <nop>
 inoremap <Down> <nop>
 inoremap <Left> <nop>
@@ -39,24 +38,43 @@ inoremap <c-u> <esc>lviwUi
 nnoremap <leader>ev :split $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
 "go after next open bracket
-noremap <leader><tab> /{\\|}<cr>j$a
-inoremap <leader><tab> <esc>/{\\|}<cr>j$a
-onoremap  <tab> :execute ":normal /{\\|}<cr>j$"<cr>
+"noremap <leader><tab> /{\\|}<cr>j$a
+"inoremap <leader><tab> <esc>/{\\|}<cr>j$a
+"onoremap  <tab> :execute ":normal /{\\|}<cr>j$"<cr>
 "comment and uncomment in c files 
 au FileType c nnoremap <expr><buffer><leader>c "^i<cr><esc>ki/*<esc>j^<c-v>" . input("Please enter number of lines to comment: ") . "jkI**<esc>`>o*/<esc>"
 au FileType c nnoremap <buffer><leader>u ?\/\*<cr><c-v>/\*\/<cr>ld`<dd`>dd 
 "if and while in c syntax
-au FileType c nnoremap <leader>i oif<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
-au FileType c nnoremap <leader>w owhile<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
-au VimEnter * echom "(>^.^<)"	
+"au FileType c nnoremap <leader>i oif<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
+"au FileType c nnoremap <leader>w owhile<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
+au VimEnter * echom "(>^.^<)"
 "put header at top of file
 au BufNewFile * :Stdheader
 "standard .h protection
-au BufNewFile *.h :call WriteHeader()
-function WriteHeader()
+function! WriteHeader()
 	normal! dd
 	.put =toupper(expand('%:t'))
 	normal! j
 	s/\./_/
-	:exe "normal! yypk^i#ifndef\<space>\<esc>j^i#\<space>define\<space>\<esc>o\<esc>o#endif\<esc>ko\<esc>ko#include\<space><unistd.h>\<esc>o#include\<space><string.h>\<esc>o#include\<space><stdio.h>\<esc>o#include\<space><stdlib.h>\<esc>o\<esc>o"
+	:exe "normal! yypk^i#ifndef\<space>\<esc>j^i#\<space>define\<space>\<esc>o\<esc>o#endif\<esc>ko\<esc>ko#\<space>include\<space><unistd.h>\<esc>o#\<space>include\<space><string.h>\<esc>o#\<space>include\<space><stdio.h>\<esc>o#\<space>include\<space><stdlib.h>\<esc>o\<esc>o"
 endfunction
+au BufNewFile *.h :call WriteHeader()
+"move between buffers with arrows
+noremap <Up> <c-w>k
+noremap <Down> <c-w>j
+noremap <Left> <c-w>h
+noremap <Right> <c-w>l
+function! Correction()
+	unmap <Up>
+	unmap <Down>
+	unmap <Left>
+	unmap <Right>
+	iunmap <Up>
+	iunmap <Down>
+	iunmap <Left>
+	iunmap <Right>
+	iunmap jk
+endfunction
+if $CORRECTION
+	call Correction()
+endif
