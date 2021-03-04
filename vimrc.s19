@@ -1,5 +1,4 @@
-set nu rnu
-set ru
+set nu
 set splitbelow
 set splitright
 set undofile
@@ -9,6 +8,8 @@ let mapleader = " "
 "move lines up and down
 noremap - ddkkp
 noremap + ddp
+vnoremap - dkkp
+vnoremap + dp
 "prevent arrows from being used
 inoremap <Up> <nop>
 inoremap <Down> <nop>
@@ -19,12 +20,18 @@ inoremap <c-h> <Left>
 inoremap <c-j> <c-o>gj
 inoremap <c-k> <c-o>gk
 inoremap <c-l> <Right>
-"enable movement with ctrl in normal mode too
-nnoremap <c-k> gk
-nnoremap <c-l> l
 "move between visual lines even if those are wrapped
 nnoremap j gj
 nnoremap k gk
+"move 50% of the screen down/up with ctrl j/k
+nnoremap <c-j> <c-d>
+nnoremap <c-k> <c-u>
+"function! ScrollSize()
+"	:let &scroll=(winheight(0)/4)
+"	:echom &scroll
+"endfunction
+"au VimResized * :call ScrollSize()
+au Vimenter * :set scroll=20
 "got to normal mode with jk
 inoremap jk <esc>l
 "delete one line with ctrl d in insert
@@ -32,8 +39,8 @@ inoremap <c-d> <esc>ddi
 "copy current line under it
 noremap <c-c> <esc>yyp$
 "capitalize current word
-noremap <c-u> viwUi
-inoremap <c-u> <esc>lviwUi
+"noremap <c-u> viwUi
+"inoremap <c-u> <esc>lviwUi
 "open and source vimrc
 nnoremap <leader>ev :split $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
@@ -41,13 +48,12 @@ nnoremap <leader>sv :source $MYVIMRC<cr>
 "noremap <leader><tab> /{\\|}<cr>j$a
 "inoremap <leader><tab> <esc>/{\\|}<cr>j$a
 "onoremap  <tab> :execute ":normal /{\\|}<cr>j$"<cr>
-"comment and uncomment in c files 
+"comment and uncomment in c files
 au FileType c nnoremap <expr><buffer><leader>c "^i<cr><esc>ki/*<esc>j^<c-v>" . input("Please enter number of lines to comment: ") . "jkI**<esc>`>o*/<esc>"
-au FileType c nnoremap <buffer><leader>u ?\/\*<cr><c-v>/\*\/<cr>ld`<dd`>dd 
+au FileType c nnoremap <buffer><leader>u ?\/\*<cr><c-v>/\*\/<cr>ld`<dd`>dd
 "if and while in c syntax
 "au FileType c nnoremap <leader>i oif<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
 "au FileType c nnoremap <leader>w owhile<space>()<esc>o{<esc>o<esc>o}<esc>kkk$i
-au VimEnter * echom "(>^.^<)"
 "put header at top of file
 au BufNewFile * :Stdheader
 "standard .h protection
@@ -78,3 +84,7 @@ endfunction
 if $CORRECTION
 	call Correction()
 endif
+"folding stuff
+set foldmethod=syntax
+set foldnestmax=1
+au VimEnter * echom "(>^.^<)"
